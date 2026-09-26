@@ -464,7 +464,6 @@ import LoadingComponent from '../components/LoadingComponent'
 
 function ChallengeScreen() {
   const [ai, setAi] = useState(null)
-  const [formality, setFormality] = useState("none")
   const [text, setText] = useState("")
   const [error, setError] = useState("")
   const [done, setDone] = useState(false)
@@ -474,8 +473,12 @@ function ChallengeScreen() {
   const [problems, setProblems] = useState("")
   const [alternate, setAlternate] = useState("")
   const [color, setColor] = useState("black")
+  const [formality, setFormality] = useState("none")
+  const [jlptLevel, setJlptlevel] = useState(5)
   const [level, setLevel] = useState(null)
   const [toTran, setToTran] = useState("")
+  const [data_jlpt, setData_jlpt] = useState({n1: {grammar:null, vocab:null}, n2: {grammar:null, vocab:null}, n3: {grammar:null, vocab:null}, n4: {grammar:null, vocab:null}, n5: {grammar:null, vocab:null}})
+  const [data, setData] = useState("")
 
   const getEnSent = async () => {
     try {
@@ -483,49 +486,92 @@ function ChallengeScreen() {
         setFormality("")
         setError("")
         setWorkingEn(true)
-        const abouts = [
-            "the speaker:aka the person saying the sentence.",
-            "the general public/society",
-            "the person youre talking to",
-            "the group youre talking to",
-            "a 3rd person not in the conversation",
-        ]
-        const sentenceStructures = [
-            "simple statement about",
-            "asking for opinion on",
-            "opinion on",
-            "plan related to",
-            "complaint about",
-            "asking for help to do something in the topic of",
-            "suggestion for"
-        ];
-        const topics = [
-            "a specific person or country in politics",
-            "your daily routine and schedule", 
-            "food, meals or cuisines",
-            "plans for weekends or holidays",
-            "weather and seasonal activities",
-            "a random sport",
-            "shopping and new products",
-            "health, and self-care routines",
-            "school/university/studies",
-            "family, friends, and relationships",
-            "work, studies, and future goals",
-            "travel experiences in abroad",
-            "public transport or personal transport",
-            "household chores and home life",
-            "a random form of entertainment (movies, music, books)",
-            "current events and personal observations"
-        ];
-        const mathCalc0 = await Math.floor(Math.random()*5)
-        const mathCalc = await Math.floor(Math.random()*16)
-        const mathCalc1 = await Math.floor(Math.random()*7)
-        const topic = topics[mathCalc]
-        const struct = sentenceStructures[mathCalc1]
-        const about = abouts[mathCalc0]
+          // const abouts = [
+          //     "the speaker:aka the person saying the sentence.",
+          //     "the general public/society",
+          //     "the person youre talking to",
+          //     "the group youre talking to",
+          //     "a 3rd person not in the conversation",
+          // ]
+          // const sentenceStructures = [
+          //     "simple statement about",
+          //     "asking for opinion on",
+          //     "opinion on",
+          //     "plan related to",
+          //     "complaint about",
+          //     "asking for help to do something in the topic of",
+          //     "suggestion for"
+          // ];
+          // const topics = [
+          //     "a specific person or country in politics",
+          //     "your daily routine and schedule", 
+          //     "food, meals or cuisines",
+          //     "plans for weekends or holidays",
+          //     "weather and seasonal activities",
+          //     "a random sport",
+          //     "shopping and new products",
+          //     "health, and self-care routines",
+          //     "school/university/studies",
+          //     "family, friends, and relationships",
+          //     "work, studies, and future goals",
+          //     "travel experiences in abroad",
+          //     "public transport or personal transport",
+          //     "household chores and home life",
+          //     "a random form of entertainment (movies, music, books)",
+          //     "current events and personal observations"
+          // ];
+          // const mathCalc0 = await Math.floor(Math.random()*5)
+          // const mathCalc = await Math.floor(Math.random()*16)
+          // const mathCalc1 = await Math.floor(Math.random()*7)
+          // const topic = topics[mathCalc]
+          // const struct = sentenceStructures[mathCalc1]
+          // const about = abouts[mathCalc0]
+        let grammarFile;
+        let vocabFile;
+        switch (jlptLevel) {
+          case 5:{
+            grammarFile = data_jlpt.n5.grammar
+            vocabFile = data_jlpt.n5.vocab
+            break;}
+          case 4:{
+            grammarFile = data_jlpt.n4.grammar
+            vocabFile = data_jlpt.n4.vocab
+            break;}
+          case 3:{
+            grammarFile = data_jlpt.n3.grammar
+            vocabFile = data_jlpt.n3.vocab
+            break;}
+          case 2:{
+            grammarFile = data_jlpt.n2.grammar
+            vocabFile = data_jlpt.n2.vocab
+            break;}
+          case 1:{
+            grammarFile = data_jlpt.n1.grammar
+            vocabFile = data_jlpt.n1.vocab
+            break;}
+          default:{
+            grammarFile = data_jlpt.n5.grammar
+            vocabFile = data_jlpt.n5.vocab
+            break;}
+        }
+        const mathCalc0 = await Math.floor(Math.random()*grammarFile.length)
+        const mathCalc = await Math.floor(Math.random()*vocabFile.length)
+        const wordQuery = vocabFile[mathCalc]
+        const mathCalcA = await Math.floor(Math.random()*wordQuery["meanings"].length)
+        const mathCalcAB = await Math.floor(Math.random()*vocabFile.length)
+        const wordQuery2 = vocabFile[mathCalcAB]
+        const mathCalcABC = await Math.floor(Math.random()*wordQuery2["meanings"].length)
+        const englishWord = wordQuery["meanings"][mathCalcA]
+        const englishWord2 = wordQuery2["meanings"][mathCalcABC]
+        const grammarQuery = grammarFile[mathCalc0]
+        const englishGrammar = grammarQuery["meaning"]
+        console.log(englishWord)
+        console.log(englishWord2)
+        console.log(englishGrammar)
+
         const data = await ai.models.generateContent({
                 model:"gemini-2.5-flash",
-                contents:`You need to help people learning japanese by providing an english sentence(ONLY 1, PRETTY SHORT SENTENCE) for them to try and translate into japanese. The sentence should be in the form of a speaker, should use normal day-to-day words, and should be understandable even without any context, examples: 'I dont think salmon is much better than tuna.', 'Have you gone to the gym yet today?', 'I cant stand people in japan. Theyre so stupid.'. Respond with nothing except the sentence you give. You should make the sentence about: ${struct} ${topic} with the target of the topic/convo being ${about}, and in a casual tone, but make sure to include specific nouns when possible.`,
+                contents:`You need to help people learning japanese by providing an english sentence(ONLY 1, PRETTY SHORT SENTENCE) for them to try and translate into japanese. The sentence should be in the form of a speaker, should use normal day-to-day words, and should be understandable even without any context, examples: 'I dont think salmon is much better than tuna.', 'Have you gone to the gym yet today?', 'I cant stand people in japan. Theyre so stupid.'. Respond with nothing except the sentence you give which should use ONLY the main subjects of (and has to contain the word)${englishWord} and ${englishWord2} and use the grammar skill of ${englishGrammar}. and in a casual tone, but make sure to include specific nouns when possible.`,
                 config:{ 
                     temperature:0.8,
                     maxOutputTokens:1500,
@@ -641,13 +687,36 @@ function ChallengeScreen() {
   }
 
   useEffect(() => {
+    const levels = ['n1', 'n2', 'n3', 'n4', 'n5']
+
+    Promise.all(
+      levels.map(async(level) => {
+        const [vocabRes, grammarRes] = await Promise.all([
+          fetch(`/data_jlpt/vocab/${level}.json`),
+          fetch(`/data_jlpt/grammar/${level}.json`)
+        ])
+        const vocab = await vocabRes.json()
+        const grammar = await grammarRes.json()
+        return {level, vocab, grammar};
+      })
+    ).then((results) => {
+      const next = {};
+      for (const {level, vocab, grammar} of results) {
+        next[level] = { vocab, grammar };
+      }
+      setData_jlpt(next);
+    }).catch((e) => {
+      console.log("Failed to load JLPT data,", e)
+    })
+    
     if (!ai && process.env.REACT_APP_GEMINI_API_KEY) {
         const initai = new GoogleGenAI({
             apiKey : process.env.REACT_APP_GEMINI_API_KEY || ''
         });
         setAi(initai)
     }
-  })
+    console.log(data_jlpt)
+  }, [])
 
   return (
     <div className="" style={{width:"75vw"}}>
@@ -671,7 +740,18 @@ function ChallengeScreen() {
               </div>
             : <h3 className="fw-medium ssf fst-italic m-0">~</h3>
           }
-          <Button className="jakarta btns bg-secondary w-auto border-0 px-[2.3] rounded-pill" onClick={() => getEnSent()}>⟳</Button>
+          <div className="d-flex flex-row justify-content-center align-items-center gap-5">
+            <Col className="justify-content-between flex-md-row">
+            <Form.Group className="mb-3 mb-md-0 d-inline-flex justify-content-center flex-column flex-sm-row align-items-center gap-2 w-auto">
+              <Form.Check className="jakarta" name="jlptLevel" id="radio1" type={"radio"} label="N5" checked={jlptLevel === 5} onChange={() => setJlptlevel(5)}></Form.Check>
+              <Form.Check className="jakarta" name="jlptLevel" id="radio2" type={"radio"} label="N4" checked={jlptLevel === 4} onChange={() => setJlptlevel(4)}></Form.Check>
+              <Form.Check className="jakarta" name="jlptLevel" id="radio3" type={"radio"} label="N3" checked={jlptLevel === 3} onChange={() => setJlptlevel(3)}></Form.Check>
+              <Form.Check className="jakarta" name="jlptLevel" id="radio2" type={"radio"} label="N2" checked={jlptLevel === 2} onChange={() => setJlptlevel(2)}></Form.Check>
+              <Form.Check className="jakarta" name="jlptLevel" id="radio3" type={"radio"} label="N1" checked={jlptLevel === 1} onChange={() => setJlptlevel(1)}></Form.Check>
+            </Form.Group>
+          </Col>
+          <Button className="jakarta btns bg-secondary w-auto border-0 px-[2.3] m-0 rounded-pill" onClick={() => getEnSent()}>⟳</Button>
+          </div>
         </div>
         <hr className="border-2"></hr>
       </Container>

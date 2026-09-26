@@ -14,6 +14,7 @@ const Header = () => {
             <Link className="lnk jakarta text-muted fw-light text-decoration-none" to={'/'}>Evaluator</Link>
             <Link className="lnk jakarta text-muted fw-light text-decoration-none" to={'/challenge'}>Challenge</Link>
             <Link className="lnk jakarta text-muted fw-light text-decoration-none" to={'/extractor'}>Word Extractor</Link>
+            <Link className="lnk jakarta text-muted fw-light text-decoration-none" to="https://github.com/denzelaria/jpval/">Github</Link>
           </div>
           <div></div>
           <Button className="p-0 d-md-none bg-transparent border-0 text-dark" onClick={() => setIsOpen(!isOpen)}>☰</Button>
