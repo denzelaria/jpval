@@ -1,6 +1,16 @@
-# Getting Started with Create React App
+# JpVal
+
+A website for learning japanese, for people to test and train the fluency of their sentences.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+# Features
+
+**Sentence fluency evaluator**: Analyzes the fluency and naturalness of inputted text based on chosen formality(none, casual, formal), giving a rating and (if needed) an improved version of the sentence.
+
+**JLPT lv based translation challenge**: Uses <a href="https://github.com/evanclan/OpenJLPT?tab=contributing-ov-file">OpenJLPT</a>'s list of JLPT-sorted vocabulary and grammar to generate an english prompt for the user to try and translate into japanese.
+
+**Sentence definition extraction**: Provides the full translation and word by word definitions of a given japanese sentence/text.
 
 ## Available Scripts
 
